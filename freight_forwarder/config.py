@@ -1590,7 +1590,7 @@ class Config(object):
                     extra={'formatter': 'config-success', 'prefix': prefix}
                 )
             else:
-                logger.DEBUG(
+                logger.debug(
                     self.__build_validation_message(ancestors, key, 'required', expected_key),
                     extra={'formatter': 'config-failure', 'prefix': prefix}
                 )
