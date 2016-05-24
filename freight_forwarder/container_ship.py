@@ -28,6 +28,8 @@ class ContainerShip(object):
         self.API_VERSION = DOCKER_API_VERSION
         self.url         = urlparse(address)
 
+        logger.info("""Creating ContainerShip at:'%s'""" % address)
+
         if self.url.scheme == 'https':
             # TODO: Need to allow for ca to be passed if not disable warnings.
             urllib3.disable_warnings()

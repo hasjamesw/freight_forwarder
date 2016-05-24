@@ -868,7 +868,7 @@ class Config(object):
     * not yet implemented.
     :param path_override: A :string:, a path to a configuration to override. defaults to cwd
     """
-    def __init__(self, path_override=None, verbose=True):
+    def __init__(self, path_override=None, verbose=False):
         self._scheme_references = {}
         self._data              = None
 
@@ -974,7 +974,7 @@ class Config(object):
         if self._verbose:
             logger.set_level('DEBUG')
         else:
-            logger.set_level('ERROR')
+            logger.set_level('INFO')
 
         logger.info('Starting configuration validation', extra={"formatter": 'config-start'})
 
@@ -1495,7 +1495,7 @@ class Config(object):
 
         if unrecognized_values:
             for key, value in six.iteritems(unrecognized_values):
-                logger.info(
+                logger.debug(
                     self.__build_validation_message(ancestors, key, 'unrecognized', key),
                     extra={'formatter': 'config-failure', 'prefix': prefix}
                 )
@@ -1566,7 +1566,7 @@ class Config(object):
             error = ConfigValidationException(ancestors, key, value, 'type', data_type)
             formatter = 'config-failure'
 
-        logger.info(
+        logger.debug(
             self.__build_validation_message(ancestors, key, 'type', data_type),
             extra={'formatter': formatter, 'prefix': prefix}
         )
@@ -1585,12 +1585,12 @@ class Config(object):
                 raise TypeError('each value in the included list must be a string.'.format(type(expected_key).__str__))
 
             if expected_key in value and value.get(expected_key) is not None:
-                logger.info(
+                logger.debug(
                     self.__build_validation_message(ancestors, key, 'required', expected_key),
                     extra={'formatter': 'config-success', 'prefix': prefix}
                 )
             else:
-                logger.info(
+                logger.DEBUG(
                     self.__build_validation_message(ancestors, key, 'required', expected_key),
                     extra={'formatter': 'config-failure', 'prefix': prefix}
                 )
@@ -1614,7 +1614,7 @@ class Config(object):
             # validate each value.
             for i, value in enumerate(values):
 
-                logger.info(
+                logger.debug(
                     self.__build_validation_message(ancestors, key, 'item[{0}]'.format(i), value),
                     extra={'formatter': 'config-message', 'prefix': item_identifier}
                 )
@@ -1646,7 +1646,7 @@ class Config(object):
             formatter = 'config-failure'
             error = ConfigValidationException(ancestors, key, value, 'max', expected)
 
-        logger.info(
+        logger.debug(
             self.__build_validation_message(ancestors, key, 'max', expected),
             extra={'formatter': formatter, 'prefix': prefix}
         )
@@ -1664,9 +1664,9 @@ class Config(object):
         if '~' in expected:
             expected = self._reference_keys(expected)
 
-        logger.info(" \u2605 {0}".format(self.__build_validation_message(ancestors, key, 'one_of', '\u2605')))
+        logger.debug(" \u2605 {0}".format(self.__build_validation_message(ancestors, key, 'one_of', '\u2605')))
         for i, expected_value in enumerate(expected):
-            logger.info("  \u2605 {0}".format(
+            logger.debug("  \u2605 {0}".format(
                 self.__build_validation_message(ancestors, key, 'one_of', 'item[{0}]'.format(i)))
             )
 
@@ -1695,7 +1695,7 @@ class Config(object):
                     if not valid:
                         error = ConfigValidationException(ancestors, key, values, 'one_of', expected)
 
-                logger.info(
+                logger.debug(
                     self.__build_validation_message(ancestors, key, 'one_of', expected_value),
                     extra={'formatter': formatter, 'prefix': one_of_prefix}
                 )
